@@ -2,3 +2,5 @@
 /.gradle/
 /reactiveusersmicroservice/build/
 /reactiveusersmicroservice/build/classes/java/main/
+/gradlew
+/gradlew.bat
