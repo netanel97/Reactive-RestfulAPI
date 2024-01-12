@@ -1,0 +1,4 @@
+# Project exclude paths
+/.gradle/
+/reactiveusersmicroservice/build/
+/reactiveusersmicroservice/build/classes/java/main/
