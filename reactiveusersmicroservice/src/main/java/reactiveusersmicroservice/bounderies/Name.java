@@ -1,4 +1,4 @@
-package reactiveusersmicroservice;
+package reactiveusersmicroservice.bounderies;
 
 public class Name {
 
@@ -29,5 +29,13 @@ public class Name {
 
     public void setLast(String last) {
         this.last = last;
+    }
+
+    @Override
+    public String toString() {
+        return "Name{" +
+                "first='" + first + '\'' +
+                ", last='" + last + '\'' +
+                '}';
     }
 }
