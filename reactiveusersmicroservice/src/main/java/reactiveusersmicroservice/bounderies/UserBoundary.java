@@ -1,25 +1,22 @@
 package reactiveusersmicroservice.bounderies;
 
+import java.util.Date;
 import java.util.List;
 
 public class UserBoundary {
-// TODO: check Date class in swagger
     private String email;
     private Name name;
-    private String password; //TODO: check if there are at least 3 chars.
-    private String birthdate; //TODO: need to check the format - dd-MM-yyyy
-    private String recruitdate; //TODO: need to check the format - dd-MM-yyyy
+    private String password;
 
-    //TODO: delete if not necessary all the comments below.
-//    private Date birthdate;
-//    private Date recruitdate;
+    private Date birthdate;
+    private Date recruitdate;
 
     private List<String> roles;
 
     public UserBoundary() {
     }
 
-    public UserBoundary(String email, Name name, String password, String birthdate, String recruitdate, List<String> roles) {
+    public UserBoundary(String email, Name name, String password, Date birthdate, Date recruitdate, List<String> roles) {
         this.email = email;
         this.name = name;
         this.password = password;
@@ -27,15 +24,6 @@ public class UserBoundary {
         this.recruitdate = recruitdate;
         this.roles = roles;
     }
-
-//    public UserBoundary(String email, Name name, String password, Date birthdate, Date recruitdate, List<String> roles) {
-//        this.email = email;
-//        this.name = name;
-//        this.password = password;
-//        this.birthdate = birthdate;
-//        this.recruitdate = recruitdate;
-//        this.roles = roles;
-//    }
 
     public String getEmail() {
         return email;
@@ -61,35 +49,19 @@ public class UserBoundary {
         this.password = password;
     }
 
-//    public Date getBirthdate() {
-//        return birthdate;
-//    }
-//
-//    public void setBirthdate(Date birthdate) {
-//        this.birthdate = birthdate;
-//    }
-//
-//    public Date getRecruitdate() {
-//        return recruitdate;
-//    }
-//
-//    public void setRecruitdate(Date recruitdate) {
-//        this.recruitdate = recruitdate;
-//    }
-
-    public String getBirthdate() {
+    public Date getBirthdate() {
         return birthdate;
     }
 
-    public void setBirthdate(String birthdate) {
+    public void setBirthdate(Date birthdate) {
         this.birthdate = birthdate;
     }
 
-    public String getRecruitdate() {
+    public Date getRecruitdate() {
         return recruitdate;
     }
 
-    public void setRecruitdate(String recruitdate) {
+    public void setRecruitdate(Date recruitdate) {
         this.recruitdate = recruitdate;
     }
 

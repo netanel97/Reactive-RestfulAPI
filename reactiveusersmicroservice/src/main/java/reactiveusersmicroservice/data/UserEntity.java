@@ -11,15 +11,11 @@ import java.util.List;
 public class UserEntity {
 
     // TODO: check if the email is id or need another id.
-
     @Id
     private String email;
     private Name name;
-    private String password; //TODO: check if there are at least 3 chars.
-//    private String birthdate; //TODO: need to check the format - dd-MM-yyyy
-//    private String recruitdate; //TODO: need to check the format - dd-MM-yyyy
+    private String password;
 
-    //TODO: delete if not necessary all the comments below.
     private Date birthdate;
     private Date recruitdate;
 
@@ -27,19 +23,6 @@ public class UserEntity {
 
     public UserEntity() {
     }
-
-
-
-    /*
-    public UserEntity(String email, Name name, String password, String birthdate, String recruitdate, List<String> roles) {
-        this.email = email;
-        this.name = name;
-        this.password = password;
-        this.birthdate = birthdate;
-        this.recruitdate = recruitdate;
-        this.roles = roles;
-    }
-    */
 
     public UserEntity(String email, Name name, String password, Date birthdate, Date recruitdate, List<String> roles) {
         this.email = email;
@@ -91,23 +74,6 @@ public class UserEntity {
         this.recruitdate = recruitdate;
     }
 
-   /*
-    public String getBirthdate() {
-        return birthdate;
-    }
-
-    public void setBirthdate(String birthdate) {
-        this.birthdate = birthdate;
-    }
-
-    public String getRecruitdate() {
-        return recruitdate;
-    }
-
-    public void setRecruitdate(String recruitdate) {
-        this.recruitdate = recruitdate;
-    }
-*/
     public List<String> getRoles() {
         return roles;
     }
