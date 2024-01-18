@@ -4,6 +4,7 @@ import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.data.repository.query.Param;
 import reactiveusersmicroservice.data.UserEntity;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.Date;
 
@@ -22,6 +23,11 @@ public interface ReactiveUsersCrud extends ReactiveMongoRepository<UserEntity, S
 	//	}
 	public Flux<UserEntity> findAllByEmailLike (
 			@Param("pattern") String pattern);
+
+
+	public Mono<UserEntity> findByEmailAndPassword(
+			@Param("email") String email,
+			@Param("password") String password);
 
 
 	//TODO: check and validate

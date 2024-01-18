@@ -28,6 +28,7 @@ public class ReactiveUserService implements UserService {
                 .map(this.converter::toBoundary);
     }
 
+
     @Override
     public Flux<UserBoundary> getUsersByDomain(String domain){
             return this.reactiveUsersCrud
@@ -36,15 +37,35 @@ public class ReactiveUserService implements UserService {
     }
 
 
+    @Override
+    public Flux<UserBoundary> getUsersByLastName(String lastName){
+        return this.reactiveUsersCrud
+                .findAllByName_Last(lastName)
+                .map(converter::toBoundary);
+    }
+
+
+    @Override
+    public Mono<UserBoundary> getSpecificUserByEmailAndPassword(String email, String password){
+        return this.reactiveUsersCrud
+                .findByEmailAndPassword(email, password)
+                .map(converter::toBoundary);
+    }
+
     /**
      * Delete all users from the database
-     * @return void
+     * @return Mono<Void>
      */
     @Override
     public Mono<Void> deleteAll() {
         return this.reactiveUsersCrud
                 .deleteAll();
     }
+
+    /**
+     * Get all users from the database
+     * @return Flux<UserBoundary>
+     */
     @Override
     public Flux<UserBoundary> getAll() {
         return this.reactiveUsersCrud

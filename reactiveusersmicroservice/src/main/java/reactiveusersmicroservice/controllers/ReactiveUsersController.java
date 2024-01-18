@@ -29,14 +29,9 @@ public class ReactiveUsersController {
             produces = {MediaType.APPLICATION_JSON_VALUE})
     public Mono<UserBoundary> getUser(@PathVariable("email") String email,
                                       @RequestParam(name = "password", required = true) String password) {
-//        for (UserBoundary user : this.users) {
-//            if (user.getEmail().equals(email) && user.getPassword().equals(password)) {
-//                return Mono.just(user)
-//                        .log();
-//            }
-//        }
-        //TODO: Change return
-        return null;
+        return this.userService
+                .getSpecificUserByEmailAndPassword(email, password)
+                .log();
     }
 
     /**
@@ -56,16 +51,16 @@ public class ReactiveUsersController {
      */
     @GetMapping(
             produces = {MediaType.TEXT_EVENT_STREAM_VALUE})
-    public Flux<UserBoundary> getAllMessages (){
+    public Flux<UserBoundary> getAllUsers (){
         return this.userService
                 .getAll()
                 .log();
     }
 
 
-
     //TODO: to check if we need to check the criteria by if(criteria.equals("byDomain"))
     @GetMapping(
+            path = {"/byDomain"},
             produces = {MediaType.TEXT_EVENT_STREAM_VALUE})
     public Flux<UserBoundary> getUsersByDomain(@RequestParam(name = "criteria", required = true) String criteria,
                                                @RequestParam(name = "value", required = true) String domain) {
@@ -73,4 +68,17 @@ public class ReactiveUsersController {
                     .getUsersByDomain(domain)
                     .log();
         }
+
+        @GetMapping(
+                path = {"/byLastname"},
+                produces = {MediaType.TEXT_EVENT_STREAM_VALUE})
+        public Flux<UserBoundary> getUsersByLastName(@RequestParam(name = "criteria", required = true) String criteria,
+                                                     @RequestParam(name = "value", required = true) String lastName) {
+                return this.userService
+                        .getUsersByLastName(lastName)
+                        .log();
+        }
+
+
+
     }
