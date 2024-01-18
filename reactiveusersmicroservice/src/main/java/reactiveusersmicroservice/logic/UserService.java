@@ -8,6 +8,8 @@ public interface UserService {
 	//TODO: add methods
 
     public Mono<UserBoundary> createUser(UserBoundary user);
+
+    public Flux<UserBoundary> getUsersByDomain(String domain);
 /*
 	public Mono<User> getMessageById(String id);
 

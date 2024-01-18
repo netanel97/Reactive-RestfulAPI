@@ -15,10 +15,10 @@ public interface ReactiveUsersCrud extends ReactiveMongoRepository<UserEntity, S
 
 
 	//TODO: the service: (ByDomain)
-	// public Flux<UserBoundary> getByDomain(String domain) {
-	//		return this.ReactiveUsersCrud
+	// public Flux<UserBoundary> getUsersByDomain(String domain) {
+	//		return this.reactiveUsersCrud
 	//			.findAllByEmailLike("*" +"@" + domain)
-	//			.map(Converter::toBoundary);
+	//			.map(converter::toBoundary);
 	//	}
 	public Flux<UserEntity> findAllByEmailLike (
 			@Param("pattern") String pattern);

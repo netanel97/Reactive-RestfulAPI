@@ -3,6 +3,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import reactiveusersmicroservice.bounderies.UserBoundary;
 import reactiveusersmicroservice.logic.UserService;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 @RestController
 @RequestMapping(path = {"/users"})
@@ -34,7 +35,20 @@ public class ReactiveUsersController {
 //                        .log();
 //            }
 //        }
-        return Mono.error(new RuntimeException("could not find user by email: " + email + " and password: " + password));
-//        return Mono.just(null);
+        //TODO: Change return
+        return null;
     }
-}
+
+
+//    GET /users?criteria=byDomain&value={domain}
+
+    //TODO: to check if we need to check the criteria by if(criteria.equals("byDomain"))
+    @GetMapping(
+            produces = {MediaType.TEXT_EVENT_STREAM_VALUE})
+    public Flux<UserBoundary> getUsersByDomain(@RequestParam(name = "criteria", required = true) String criteria,
+                                               @RequestParam(name = "value", required = true) String domain) {
+            return this.userService
+                    .getUsersByDomain(domain)
+                    .log();
+        }
+    }
