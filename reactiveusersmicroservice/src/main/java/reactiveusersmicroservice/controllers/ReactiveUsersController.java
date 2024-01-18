@@ -39,8 +39,30 @@ public class ReactiveUsersController {
         return null;
     }
 
+    /**
+     * Delete all users from the database
+     * @return void
+     */
+    @DeleteMapping
+    public Mono<Void> deleteAll(){
+        return this.userService
+                .deleteAll()
+                .log();
+    }
 
-//    GET /users?criteria=byDomain&value={domain}
+    /**
+     * Get all users from the database
+     * @return Flux<UserBoundary>
+     */
+    @GetMapping(
+            produces = {MediaType.TEXT_EVENT_STREAM_VALUE})
+    public Flux<UserBoundary> getAllMessages (){
+        return this.userService
+                .getAll()
+                .log();
+    }
+
+
 
     //TODO: to check if we need to check the criteria by if(criteria.equals("byDomain"))
     @GetMapping(

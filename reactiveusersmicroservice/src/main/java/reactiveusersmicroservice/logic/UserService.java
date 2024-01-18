@@ -10,15 +10,8 @@ public interface UserService {
     public Mono<UserBoundary> createUser(UserBoundary user);
 
     public Flux<UserBoundary> getUsersByDomain(String domain);
-/*
-	public Mono<User> getMessageById(String id);
 
-	public Mono<MessageBoundary> createMessage(MessageBoundary message);
+    public Mono<Void> deleteAll();
 
-	public Flux<MessageBoundary> getAll();
-	public Flux<MessageBoundary> getByPrefix(String prefix);
-
-	public Mono<Void> deleteAll();
-*/
-
+    public Flux<UserBoundary> getAll();
 }

@@ -8,8 +8,8 @@ public class UserBoundary {
     private Name name;
     private String password;
 
-    private Date birthdate;
-    private Date recruitdate;
+    private String birthdate;
+    private String recruitdate;
 
     private List<String> roles;
 
@@ -17,7 +17,7 @@ public class UserBoundary {
 
     }
 
-    public UserBoundary(String email, Name name, String password, Date birthdate, Date recruitdate, List<String> roles) {
+    public UserBoundary(String email, Name name, String password, String birthdate, String recruitdate, List<String> roles) {
         this.email = email;
         this.name = name;
         this.password = password;
@@ -52,19 +52,35 @@ public class UserBoundary {
         this.password = password;
     }
 
-    public Date getBirthdate() {
+//    public Date getBirthdate() {
+//        return birthdate;
+//    }
+//
+//    public void setBirthdate(Date birthdate) {
+//        this.birthdate = birthdate;
+//    }
+//
+//    public Date getRecruitdate() {
+//        return recruitdate;
+//    }
+//
+//    public void setRecruitdate(Date recruitdate) {
+//        this.recruitdate = recruitdate;
+//    }
+
+    public String getBirthdate() {
         return birthdate;
     }
 
-    public void setBirthdate(Date birthdate) {
+    public void setBirthdate(String birthdate) {
         this.birthdate = birthdate;
     }
 
-    public Date getRecruitdate() {
+    public String getRecruitdate() {
         return recruitdate;
     }
 
-    public void setRecruitdate(Date recruitdate) {
+    public void setRecruitdate(String recruitdate) {
         this.recruitdate = recruitdate;
     }
 
