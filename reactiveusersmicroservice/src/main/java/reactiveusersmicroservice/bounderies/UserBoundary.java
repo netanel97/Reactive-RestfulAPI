@@ -14,6 +14,7 @@ public class UserBoundary {
     private List<String> roles;
 
     public UserBoundary() {
+
     }
 
     public UserBoundary(String email, Name name, String password, Date birthdate, Date recruitdate, List<String> roles) {
@@ -24,6 +25,8 @@ public class UserBoundary {
         this.recruitdate = recruitdate;
         this.roles = roles;
     }
+
+
 
     public String getEmail() {
         return email;
@@ -84,4 +87,6 @@ public class UserBoundary {
                 ", roles=" + roles +
                 '}';
     }
+
+
 }
