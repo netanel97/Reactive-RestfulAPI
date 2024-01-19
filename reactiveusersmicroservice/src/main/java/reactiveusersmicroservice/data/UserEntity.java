@@ -10,7 +10,6 @@ import java.util.List;
 @Document(collection = "users")
 public class UserEntity {
 
-    // TODO: check if the email is id or need another id.
     @Id
     private String email;
     private Name name;

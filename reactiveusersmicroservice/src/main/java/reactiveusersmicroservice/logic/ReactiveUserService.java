@@ -3,7 +3,7 @@ package reactiveusersmicroservice.logic;
 import org.springframework.stereotype.Service;
 import reactiveusersmicroservice.bounderies.UserBoundary;
 import reactiveusersmicroservice.dal.ReactiveUsersCrud;
-import reactiveusersmicroservice.utils.Converter;
+import reactiveusersmicroservice.utils.UserConverter;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -11,12 +11,12 @@ import static reactiveusersmicroservice.utils.Constants.*;
 
 @Service
 public class ReactiveUserService implements UserService {
-    private Converter converter;
+    private UserConverter userConverter;
     private ReactiveUsersCrud reactiveUsersCrud;
 
-    public ReactiveUserService(ReactiveUsersCrud reactiveUsersCrud,Converter converter) {
+    public ReactiveUserService(ReactiveUsersCrud reactiveUsersCrud, UserConverter userConverter) {
         this.reactiveUsersCrud = reactiveUsersCrud;
-        this.converter = converter;
+        this.userConverter = userConverter;
     }
 
 
@@ -29,9 +29,9 @@ public class ReactiveUserService implements UserService {
                         return Mono.just(new UserBoundary()); //TODO: need to check if need to throw exception or 200ok
                     } else {
                         return Mono.just(user)
-                                .map(this.converter::toEntity)
+                                .map(this.userConverter::toEntity)
                                 .flatMap(this.reactiveUsersCrud::save)
-                                .map(this.converter::toBoundary);
+                                .map(this.userConverter::toBoundary);
                     }
                 });
     }
@@ -41,7 +41,7 @@ public class ReactiveUserService implements UserService {
     public Flux<UserBoundary> getUsersByDomain(String domain){
         return this.reactiveUsersCrud
                 .findAllByEmailLike("*" + DOMAIN + domain)
-                .map(converter::toBoundary);
+                .map(userConverter::toBoundary);
     }
 
 
@@ -49,7 +49,7 @@ public class ReactiveUserService implements UserService {
     public Flux<UserBoundary> getUsersByLastName(String lastName){
         return this.reactiveUsersCrud
                 .findAllByName_LastIgnoreCase(lastName)
-                .map(converter::toBoundary);
+                .map(userConverter::toBoundary);
     }
 
 
@@ -57,7 +57,7 @@ public class ReactiveUserService implements UserService {
     public Mono<UserBoundary> getSpecificUserByEmailAndPassword(String email, String password){
         return this.reactiveUsersCrud
                 .findByEmailAndPassword(email, password)
-                .map(converter::toBoundary);
+                .map(userConverter::toBoundary);
     }
 
     @Override
@@ -88,6 +88,6 @@ public class ReactiveUserService implements UserService {
     public Flux<UserBoundary> getAll() {
         return this.reactiveUsersCrud
                 .findAll()
-                .map(this.converter::toBoundary);
+                .map(this.userConverter::toBoundary);
     }
 }

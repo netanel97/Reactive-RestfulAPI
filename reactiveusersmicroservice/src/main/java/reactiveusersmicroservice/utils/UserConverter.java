@@ -6,7 +6,7 @@ import reactiveusersmicroservice.bounderies.UserBoundary;
 import reactiveusersmicroservice.data.UserEntity;
 
 @Component
-public class Converter {
+public class UserConverter {
 
     public UserEntity toEntity(UserBoundary userBoundary) {
         UserEntity entity = new UserEntity();
