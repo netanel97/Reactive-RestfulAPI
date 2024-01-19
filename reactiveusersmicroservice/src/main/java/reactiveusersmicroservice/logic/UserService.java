@@ -19,4 +19,6 @@ public interface UserService {
     public Flux<UserBoundary> getAll();
 
     public Mono<UserBoundary> getSpecificUserByEmailAndPassword(String email, String password);
+
+    public Flux<UserBoundary> getUsersByCriteria(String criteria, String domain);
 }

@@ -60,12 +60,12 @@ public class ReactiveUsersController {
 
     //TODO: to check if we need to check the criteria by if(criteria.equals("byDomain"))
     @GetMapping(
-            path = {"/byDomain"},
+            params = {"criteria", "value"},
             produces = {MediaType.TEXT_EVENT_STREAM_VALUE})
-    public Flux<UserBoundary> getUsersByDomain(@RequestParam(name = "criteria", required = true) String criteria,
+    public Flux<UserBoundary> getUsersByCriteria(@RequestParam(name = "criteria", required = true) String criteria,
                                                @RequestParam(name = "value", required = true) String domain) {
             return this.userService
-                    .getUsersByDomain(domain)
+                    .getUsersByCriteria(criteria,domain)
                     .log();
         }
 

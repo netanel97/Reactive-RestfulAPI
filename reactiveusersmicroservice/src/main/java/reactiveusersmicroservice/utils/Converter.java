@@ -23,6 +23,7 @@ public class Converter {
     public UserBoundary toBoundary(UserEntity userEntity) {
         UserBoundary boundary = new UserBoundary();
         boundary.setEmail(userEntity.getEmail());
+        boundary.setPassword("********");
         boundary.setName(userEntity.getName());
         boundary.setBirthdate(userEntity.getBirthdate());
         boundary.setRecruitdate(userEntity.getRecruitdate());

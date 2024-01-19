@@ -11,7 +11,7 @@ import java.util.Date;
 public interface ReactiveUsersCrud extends ReactiveMongoRepository<UserEntity, String>{
 	// TODO: add methods
 
-	public Flux<UserEntity> findAllByName_Last (
+	public Flux<UserEntity> findAllByName_LastIgnoreCase (
 			@Param("lastName") String lastName);
 
 
