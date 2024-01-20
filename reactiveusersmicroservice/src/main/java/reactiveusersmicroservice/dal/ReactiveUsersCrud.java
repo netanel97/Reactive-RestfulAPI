@@ -30,7 +30,7 @@ public interface ReactiveUsersCrud extends ReactiveMongoRepository<UserEntity, S
 			@Param("email") String email,
 			@Param("password") String password);
 
-	@Query("{ 'deptIds' : ?0 }")
+	@Query("{ 'departments' : ?0 }")
 	Flux<UserEntity> findAllUsersByDeptId(String deptId);
 
 }

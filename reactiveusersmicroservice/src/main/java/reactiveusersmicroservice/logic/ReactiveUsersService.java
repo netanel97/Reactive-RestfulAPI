@@ -3,6 +3,7 @@ package reactiveusersmicroservice.logic;
 import org.springframework.stereotype.Service;
 import reactiveusersmicroservice.bounderies.DepartmentInvoker;
 import reactiveusersmicroservice.bounderies.UserBoundary;
+import reactiveusersmicroservice.dal.ReactiveDepartmentsCrud;
 import reactiveusersmicroservice.dal.ReactiveUsersCrud;
 import reactiveusersmicroservice.utils.UsersConverter;
 import reactor.core.publisher.Flux;
@@ -14,10 +15,12 @@ import static reactiveusersmicroservice.utils.Constants.*;
 public class ReactiveUsersService implements UsersService {
     private UsersConverter usersConverter;
     private ReactiveUsersCrud reactiveUsersCrud;
+    private ReactiveDepartmentsCrud reactiveDepartmentsCrud;
 
-    public ReactiveUsersService(ReactiveUsersCrud reactiveUsersCrud, UsersConverter usersConverter) {
+    public ReactiveUsersService(ReactiveUsersCrud reactiveUsersCrud, UsersConverter usersConverter, ReactiveDepartmentsCrud reactiveDepartmentsCrud) {
         this.reactiveUsersCrud = reactiveUsersCrud;
         this.usersConverter = usersConverter;
+        this.reactiveDepartmentsCrud = reactiveDepartmentsCrud;
     }
 
 
@@ -82,22 +85,49 @@ public class ReactiveUsersService implements UsersService {
             case (CRITERIA_DOMAIN) -> this.getUsersByDomain(value);
             case (CRITERIA_LASTNAME) -> this.getUsersByLastName(value);
             case (CRITERIA_MINIMUM_AGE) -> this.getUsersByMinimumAge(value);
+            case (CRITERIA_DEPARTMENT) -> this.getUsersByDepartmentId(value);
             default ->
                     Flux.error(new RuntimeException("Invalid criteria"));//TODO: need to check if need to throw exception or 200ok
         };
     }
+    /**
+     * Get users by department id
+     * @param value defines the department id to search by
+     * @return Flux<UserBoundary>
+     */
+
+    private Flux<UserBoundary> getUsersByDepartmentId(String value) {
+        return this.reactiveUsersCrud.findAllUsersByDeptId(value)
+                .map(usersConverter::toBoundary);
+    }
 
     @Override
     public Mono<Void> bindUserDepartment(String email, DepartmentInvoker department) {
+        return this.reactiveUsersCrud.existsById(email)
+                .flatMap(exists -> {
+                    System.err.println(exists);
+                    if (!exists) {
+                        return Mono.empty(); // User does not exist
+                    }
+                    return reactiveDepartmentsCrud.existsById(department.getDepartment().getDepId())
+                            .flatMap(deptExists -> {
+                                if (!deptExists) {
+                                    return Mono.empty(); // Department does not exist
+                                }
+                                return this.reactiveUsersCrud.findById(email) // finding user by email
+                                        .flatMap(user -> { // User Entity
+                                            String depId = department.getDepartment().getDepId();
+                                            if (!user.getDepartments().contains(depId)) {
+                                                user.getDepartments().add(depId); // Add department if not already present
+                                                return this.reactiveUsersCrud.save(user).then(); // Save and convert to Mono<Void>
+                                            }
 
-        return this.reactiveUsersCrud
-                .findById(email)
-                .flatMap(userEntity -> {
-                    userEntity.getDepartments().add();
-                    return this.reactiveUsersCrud.save(userEntity);
-                })
-                .then();
+                                            return Mono.empty(); // Department already present, no action needed
+                                        });
+                            });
+                });
     }
+
 
     /**
      * Delete all users from the database

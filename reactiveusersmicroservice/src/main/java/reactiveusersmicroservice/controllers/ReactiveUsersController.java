@@ -70,7 +70,6 @@ public class ReactiveUsersController {
                     .log();
         }
 
-        //PUT /users/Noy.Tsafrir@s.afeka.ac.il/department
 
     @PutMapping(
             path = {"/{email}/department"},

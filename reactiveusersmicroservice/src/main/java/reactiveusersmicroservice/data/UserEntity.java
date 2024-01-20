@@ -23,14 +23,13 @@ public class UserEntity {
     private String recruitdate;
     private List<String> roles;
 
-    //TODO: check if need to change to DepartmentId in the set
-    @DBRef(lazy = true)
-    private Set<DepartmentId> departments = new HashSet<>();
+    //TODO: check if need to change to DepartmentId in the set and need to check DBRef(lazy=true)
+    private Set<String> departments = new HashSet<>();
 
     public UserEntity() {
     }
 
-    public UserEntity(String email, Name name, String password, String birthdate, String recruitdate, List<String> roles, Set<DepartmentId> departments) {
+    public UserEntity(String email, Name name, String password, String birthdate, String recruitdate, List<String> roles, Set<String> departments) {
         this.email = email;
         this.name = name;
         this.password = password;
@@ -88,11 +87,11 @@ public class UserEntity {
         this.roles = roles;
     }
 
-    public Set<DepartmentId> getDepartments() {
+    public Set<String> getDepartments() {
         return departments;
     }
 
-    public void setDepartments(Set<DepartmentId> departments) {
+    public void setDepartments(Set<String> departments) {
         this.departments = departments;
     }
 
