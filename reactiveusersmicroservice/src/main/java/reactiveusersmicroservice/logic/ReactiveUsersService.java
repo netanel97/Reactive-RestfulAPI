@@ -3,20 +3,20 @@ package reactiveusersmicroservice.logic;
 import org.springframework.stereotype.Service;
 import reactiveusersmicroservice.bounderies.UserBoundary;
 import reactiveusersmicroservice.dal.ReactiveUsersCrud;
-import reactiveusersmicroservice.utils.UserConverter;
+import reactiveusersmicroservice.utils.UsersConverter;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import static reactiveusersmicroservice.utils.Constants.*;
 
 @Service
-public class ReactiveUserService implements UserService {
-    private UserConverter userConverter;
+public class ReactiveUsersService implements UsersService {
+    private UsersConverter usersConverter;
     private ReactiveUsersCrud reactiveUsersCrud;
 
-    public ReactiveUserService(ReactiveUsersCrud reactiveUsersCrud, UserConverter userConverter) {
+    public ReactiveUsersService(ReactiveUsersCrud reactiveUsersCrud, UsersConverter usersConverter) {
         this.reactiveUsersCrud = reactiveUsersCrud;
-        this.userConverter = userConverter;
+        this.usersConverter = usersConverter;
     }
 
 
@@ -25,31 +25,30 @@ public class ReactiveUserService implements UserService {
         return this.reactiveUsersCrud.existsById(user.getEmail())
                 .flatMap(exists -> {
                     if (exists) {
-                        System.err.println("User already exists");
                         return Mono.just(new UserBoundary()); //TODO: need to check if need to throw exception or 200ok
                     } else {
                         return Mono.just(user)
-                                .map(this.userConverter::toEntity)
+                                .map(this.usersConverter::toEntity)
                                 .flatMap(this.reactiveUsersCrud::save)
-                                .map(this.userConverter::toBoundary);
+                                .map(this.usersConverter::toBoundary);
                     }
                 });
     }
 
 
 
-    public Flux<UserBoundary> getUsersByDomain(String domain){
+    private Flux<UserBoundary> getUsersByDomain(String domain){
         return this.reactiveUsersCrud
                 .findAllByEmailLike("*" + DOMAIN + domain)
-                .map(userConverter::toBoundary);
+                .map(usersConverter::toBoundary);
     }
 
 
 
-    public Flux<UserBoundary> getUsersByLastName(String lastName){
+    private Flux<UserBoundary> getUsersByLastName(String lastName){
         return this.reactiveUsersCrud
                 .findAllByName_LastIgnoreCase(lastName)
-                .map(userConverter::toBoundary);
+                .map(usersConverter::toBoundary);
     }
 
 
@@ -57,7 +56,7 @@ public class ReactiveUserService implements UserService {
     public Mono<UserBoundary> getSpecificUserByEmailAndPassword(String email, String password){
         return this.reactiveUsersCrud
                 .findByEmailAndPassword(email, password)
-                .map(userConverter::toBoundary);
+                .map(usersConverter::toBoundary);
     }
     /**
      * Get all users that are older than the minimum age
@@ -66,22 +65,22 @@ public class ReactiveUserService implements UserService {
      */
     private Flux<UserBoundary> getUsersByMinimumAge(String miniMinimumAge){
         return this.reactiveUsersCrud.findAll()
-                .map(userConverter::toBoundary)
-                .filter(userBoundary -> userConverter.isOlderThen(miniMinimumAge, userBoundary.getBirthdate()));
+                .map(usersConverter::toBoundary)
+                .filter(userBoundary -> usersConverter.isOlderThen(miniMinimumAge, userBoundary.getBirthdate()));
     }
 
     /**
      * Get users by criteria
      * @param criteria defines the criteria to search by
-     * @param domain defines the domain to search by
+     * @param value defines the domain to search by
      * @return Flux<UserBoundary>
      */
     @Override
-    public Flux<UserBoundary> getUsersByCriteria(String criteria, String domain) {
+    public Flux<UserBoundary> getUsersByCriteria(String criteria, String value) {
         return switch (criteria) {
-            case (DOMAIN_CRITERIA) -> this.getUsersByDomain(domain);
-            case (DOMAIN_BY_LASTNAME) -> this.getUsersByLastName(domain);
-            case (DOMAIN_BY_MINIMUM_AGE) -> this.getUsersByMinimumAge(domain);
+            case (CRITERIA_DOMAIN) -> this.getUsersByDomain(value);
+            case (CRITERIA_LASTNAME) -> this.getUsersByLastName(value);
+            case (CRITERIA_MINIMUM_AGE) -> this.getUsersByMinimumAge(value);
             default ->
                     Flux.error(new RuntimeException("Invalid criteria"));//TODO: need to check if need to throw exception or 200ok
         };
@@ -105,6 +104,6 @@ public class ReactiveUserService implements UserService {
     public Flux<UserBoundary> getAll() {
         return this.reactiveUsersCrud
                 .findAll()
-                .map(this.userConverter::toBoundary);
+                .map(this.usersConverter::toBoundary);
     }
 }

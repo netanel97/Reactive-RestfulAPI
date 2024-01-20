@@ -4,7 +4,6 @@ public class DepartmentBoundary {
 
     private String deptId;
     private String departmentName;
-
     private String creationDate;
 
     public DepartmentBoundary(String deptId, String departmentName, String creationDate) {

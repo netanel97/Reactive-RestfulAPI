@@ -2,24 +2,24 @@ package reactiveusersmicroservice.controllers;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import reactiveusersmicroservice.bounderies.UserBoundary;
-import reactiveusersmicroservice.logic.UserService;
+import reactiveusersmicroservice.logic.UsersService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 @RestController
 @RequestMapping(path = {"/users"})
 public class ReactiveUsersController {
 
-    private UserService userService;
+    private UsersService usersService;
 
-    public ReactiveUsersController(UserService userService) {
-        this.userService = userService;
+    public ReactiveUsersController(UsersService usersService) {
+        this.usersService = usersService;
     }
 
     @PostMapping(
             produces = {MediaType.APPLICATION_JSON_VALUE},
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     public Mono<UserBoundary> createUser(@RequestBody UserBoundary userBoundary) {
-        return this.userService
+        return this.usersService
                 .createUser(userBoundary)
                 .log();
     }
@@ -29,7 +29,7 @@ public class ReactiveUsersController {
             produces = {MediaType.APPLICATION_JSON_VALUE})
     public Mono<UserBoundary> getUser(@PathVariable("email") String email,
                                       @RequestParam(name = "password", required = true) String password) {
-        return this.userService
+        return this.usersService
                 .getSpecificUserByEmailAndPassword(email, password)
                 .log();
     }
@@ -40,7 +40,7 @@ public class ReactiveUsersController {
      */
     @DeleteMapping
     public Mono<Void> deleteAll(){
-        return this.userService
+        return this.usersService
                 .deleteAll()
                 .log();
     }
@@ -52,7 +52,7 @@ public class ReactiveUsersController {
     @GetMapping(
             produces = {MediaType.TEXT_EVENT_STREAM_VALUE})
     public Flux<UserBoundary> getAllUsers (){
-        return this.userService
+        return this.usersService
                 .getAll()
                 .log();
     }
@@ -63,9 +63,9 @@ public class ReactiveUsersController {
             params = {"criteria", "value"},
             produces = {MediaType.TEXT_EVENT_STREAM_VALUE})
     public Flux<UserBoundary> getUsersByCriteria(@RequestParam(name = "criteria", required = true) String criteria,
-                                               @RequestParam(name = "value", required = true) String domain) {
-            return this.userService
-                    .getUsersByCriteria(criteria,domain)
+                                               @RequestParam(name = "value", required = true) String value) {
+            return this.usersService
+                    .getUsersByCriteria(criteria,value)
                     .log();
         }
     }
