@@ -1,5 +1,7 @@
 package reactiveusersmicroservice.dal;
 
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.data.repository.query.Param;
 import reactiveusersmicroservice.data.UserEntity;
@@ -9,7 +11,6 @@ import reactor.core.publisher.Mono;
 import java.util.Date;
 
 public interface ReactiveUsersCrud extends ReactiveMongoRepository<UserEntity, String>{
-	// TODO: add methods
 
 	public Flux<UserEntity> findAllByName_LastIgnoreCase (
 			@Param("lastName") String lastName);
@@ -29,21 +30,7 @@ public interface ReactiveUsersCrud extends ReactiveMongoRepository<UserEntity, S
 			@Param("email") String email,
 			@Param("password") String password);
 
-
-	//TODO: check and validate
-	// the service: (ByMinAge)
-	// public Flux<UserBoundary> getByMinAge(int minAge) {
-	//		return this.ReactiveUsersCrud
-	//			.findAllByBirthdateBefore(minBirthdate)
-	//			.map(Converter::toBoundary);
-	//	}
-	// import java.util.Calendar;
-	// Calendar calendar = Calendar.getInstance();
-	// calendar.add(Calendar.YEAR, -18); // Set the cutoff date to be 18 years ago
-	// Date minBirthdate = calendar.getTime();
-
-	// check if the birthdate should be a date or int
-	public Flux<UserEntity> findAllByBirthdateBefore (
-			@Param("birthdate") int birthdate);
+	@Query("{ 'deptIds' : ?0 }")
+	Flux<UserEntity> findAllUsersByDeptId(String deptId);
 
 }

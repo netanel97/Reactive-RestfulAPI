@@ -1,6 +1,7 @@
 package reactiveusersmicroservice.logic;
 
 import org.springframework.stereotype.Service;
+import reactiveusersmicroservice.bounderies.DepartmentInvoker;
 import reactiveusersmicroservice.bounderies.UserBoundary;
 import reactiveusersmicroservice.dal.ReactiveUsersCrud;
 import reactiveusersmicroservice.utils.UsersConverter;
@@ -84,6 +85,18 @@ public class ReactiveUsersService implements UsersService {
             default ->
                     Flux.error(new RuntimeException("Invalid criteria"));//TODO: need to check if need to throw exception or 200ok
         };
+    }
+
+    @Override
+    public Mono<Void> bindUserDepartment(String email, DepartmentInvoker department) {
+
+        return this.reactiveUsersCrud
+                .findById(email)
+                .flatMap(userEntity -> {
+                    userEntity.getDepartments().add();
+                    return this.reactiveUsersCrud.save(userEntity);
+                })
+                .then();
     }
 
     /**
