@@ -68,14 +68,4 @@ public class ReactiveUsersController {
                     .getUsersByCriteria(criteria,domain)
                     .log();
         }
-
-        @GetMapping(
-                path = {"/byLastname"},
-                produces = {MediaType.TEXT_EVENT_STREAM_VALUE})
-        public Flux<UserBoundary> getUsersByLastName(@RequestParam(name = "criteria", required = true) String criteria,
-                                                     @RequestParam(name = "value", required = true) String lastName) {
-                return this.userService
-                        .getUsersByLastName(lastName)
-                        .log();
-        }
     }

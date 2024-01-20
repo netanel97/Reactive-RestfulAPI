@@ -10,10 +10,6 @@ public interface UserService {
 
     public Mono<UserBoundary> createUser(UserBoundary user);
 
-    public Flux<UserBoundary> getUsersByDomain(String domain);
-
-    public Flux<UserBoundary> getUsersByLastName(String lastName);
-
     public Mono<Void> deleteAll();
 
     public Flux<UserBoundary> getAll();

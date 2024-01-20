@@ -1,5 +1,7 @@
 package reactiveusersmicroservice.utils;
 
+import reactiveusersmicroservice.bounderies.UserBoundary;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -14,13 +16,11 @@ public class Validators {
             return password.length() >= 3;
         }
 
-        public static boolean isDateValid(String date) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-            try {
-                LocalDate.parse(date, formatter);
-                return true;
-            } catch (DateTimeParseException e) {
-                return false;
-            }
+
+
+        //TODO: need to add more validations
+        public static boolean isValidUser(UserBoundary userBoundary)
+        {
+            return true;
         }
 }
