@@ -1,13 +1,10 @@
 package reactiveusersmicroservice.data;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-import reactiveusersmicroservice.bounderies.DepartmentId;
-import reactiveusersmicroservice.bounderies.DepartmentInvoker;
+
 import reactiveusersmicroservice.bounderies.Name;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -23,7 +20,6 @@ public class UserEntity {
     private String recruitdate;
     private List<String> roles;
 
-    //TODO: check if need to change to DepartmentId in the set and need to check DBRef(lazy=true)
     private Set<String> departments = new HashSet<>();
 
     public UserEntity() {

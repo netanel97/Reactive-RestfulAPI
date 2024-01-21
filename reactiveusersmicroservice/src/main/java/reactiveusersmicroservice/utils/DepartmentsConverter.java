@@ -3,7 +3,6 @@ package reactiveusersmicroservice.utils;
 import org.springframework.stereotype.Component;
 import reactiveusersmicroservice.bounderies.DepartmentBoundary;
 import reactiveusersmicroservice.data.DepartmentEntity;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 

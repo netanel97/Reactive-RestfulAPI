@@ -8,7 +8,6 @@ import reactiveusersmicroservice.dal.ReactiveUsersCrud;
 import reactiveusersmicroservice.utils.UsersConverter;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
 import static reactiveusersmicroservice.utils.Constants.*;
 
 @Service
@@ -40,16 +39,14 @@ public class ReactiveUsersService implements UsersService {
     }
 
 
-
-    private Flux<UserBoundary> getUsersByDomain(String domain){
+    private Flux<UserBoundary> getUsersByDomain(String domain) {
         return this.reactiveUsersCrud
                 .findAllByEmailLike("*" + DOMAIN + domain)
                 .map(usersConverter::toBoundary);
     }
 
 
-
-    private Flux<UserBoundary> getUsersByLastName(String lastName){
+    private Flux<UserBoundary> getUsersByLastName(String lastName) {
         return this.reactiveUsersCrud
                 .findAllByName_LastIgnoreCase(lastName)
                 .map(usersConverter::toBoundary);
@@ -57,17 +54,19 @@ public class ReactiveUsersService implements UsersService {
 
 
     @Override
-    public Mono<UserBoundary> getSpecificUserByEmailAndPassword(String email, String password){
+    public Mono<UserBoundary> getSpecificUserByEmailAndPassword(String email, String password) {
         return this.reactiveUsersCrud
                 .findByEmailAndPassword(email, password)
                 .map(usersConverter::toBoundary);
     }
+
     /**
      * Get all users that are older than the minimum age
+     *
      * @param miniMinimumAge defines the minimum age
      * @return Flux<UserBoundary>
      */
-    private Flux<UserBoundary> getUsersByMinimumAge(String miniMinimumAge){
+    private Flux<UserBoundary> getUsersByMinimumAge(String miniMinimumAge) {
         return this.reactiveUsersCrud.findAll()
                 .map(usersConverter::toBoundary)
                 .filter(userBoundary -> usersConverter.isOlderThen(miniMinimumAge, userBoundary.getBirthdate()));
@@ -75,8 +74,9 @@ public class ReactiveUsersService implements UsersService {
 
     /**
      * Get users by criteria
+     *
      * @param criteria defines the criteria to search by
-     * @param value defines the domain to search by
+     * @param value    defines the domain to search by
      * @return Flux<UserBoundary>
      */
     @Override
@@ -90,8 +90,10 @@ public class ReactiveUsersService implements UsersService {
                     Flux.error(new RuntimeException("Invalid criteria"));//TODO: need to check if need to throw exception or 200ok
         };
     }
+
     /**
      * Get users by department id
+     *
      * @param value defines the department id to search by
      * @return Flux<UserBoundary>
      */
@@ -131,6 +133,7 @@ public class ReactiveUsersService implements UsersService {
 
     /**
      * Delete all users from the database
+     *
      * @return Mono<Void>
      */
     @Override
@@ -141,6 +144,7 @@ public class ReactiveUsersService implements UsersService {
 
     /**
      * Get all users from the database
+     *
      * @return Flux<UserBoundary>
      */
     @Override
@@ -149,4 +153,15 @@ public class ReactiveUsersService implements UsersService {
                 .findAll()
                 .map(this.usersConverter::toBoundary);
     }
+
+    @Override
+    public Mono<Void> removeAllDepartmentsFromUsers() {
+        return this.reactiveUsersCrud
+                .findAll()
+                .flatMap(user -> {
+                    user.getDepartments().clear(); // Clearing the departments set
+                    return this.reactiveUsersCrud.save(user); // Saving the user back to the database
+                }).then();
+    }
+
 }

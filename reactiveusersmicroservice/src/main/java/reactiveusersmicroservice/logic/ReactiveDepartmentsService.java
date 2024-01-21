@@ -13,9 +13,12 @@ public class ReactiveDepartmentsService implements DepartmentsService {
     private DepartmentsConverter departmentsConverter;
     private ReactiveDepartmentsCrud reactiveDepartmentsCrud;
 
-    public ReactiveDepartmentsService(ReactiveDepartmentsCrud reactiveDepartmentsCrud, DepartmentsConverter departmentsConverter) {
+    private UsersService reactiveUsersService;
+
+    public ReactiveDepartmentsService(ReactiveDepartmentsCrud reactiveDepartmentsCrud, DepartmentsConverter departmentsConverter, UsersService reactiveUsersService) {
         this.reactiveDepartmentsCrud = reactiveDepartmentsCrud;
         this.departmentsConverter = departmentsConverter;
+        this.reactiveUsersService = reactiveUsersService;
     }
 
     @Override
@@ -51,6 +54,7 @@ public class ReactiveDepartmentsService implements DepartmentsService {
     @Override
     public Mono<Void> deleteAll() {
         return this.reactiveDepartmentsCrud
-                .deleteAll();
+                .deleteAll()
+                .then(this.reactiveUsersService.removeAllDepartmentsFromUsers());
     }
 }
