@@ -2,7 +2,7 @@ package reactiveusersmicroservice.logic;
 
 
 import org.springframework.stereotype.Service;
-import reactiveusersmicroservice.bounderies.DepartmentBoundary;
+import reactiveusersmicroservice.boundaries.DepartmentBoundary;
 import reactiveusersmicroservice.dal.ReactiveDepartmentsCrud;
 import reactiveusersmicroservice.utils.DepartmentsConverter;
 import reactor.core.publisher.Flux;

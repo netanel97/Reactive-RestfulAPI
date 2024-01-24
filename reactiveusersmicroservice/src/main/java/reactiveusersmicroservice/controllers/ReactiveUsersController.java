@@ -1,8 +1,9 @@
 package reactiveusersmicroservice.controllers;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import reactiveusersmicroservice.bounderies.DepartmentInvoker;
-import reactiveusersmicroservice.bounderies.UserBoundary;
+import reactiveusersmicroservice.boundaries.DepartmentInvoker;
+import reactiveusersmicroservice.boundaries.EncryptedUserBoundary;
+import reactiveusersmicroservice.boundaries.UserBoundary;
 import reactiveusersmicroservice.logic.UsersService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -20,7 +21,7 @@ public class ReactiveUsersController {
     @PostMapping(
             produces = {MediaType.APPLICATION_JSON_VALUE},
             consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public Mono<UserBoundary> createUser(@RequestBody UserBoundary userBoundary) {
+    public Mono<EncryptedUserBoundary> createUser(@RequestBody UserBoundary userBoundary) {
         return this.usersService
                 .createUser(userBoundary)
                 .log();
@@ -29,7 +30,7 @@ public class ReactiveUsersController {
     @GetMapping(
             path = {"/{email}"},
             produces = {MediaType.APPLICATION_JSON_VALUE})
-    public Mono<UserBoundary> getUser(@PathVariable("email") String email,
+    public Mono<EncryptedUserBoundary> getUser(@PathVariable("email") String email,
                                       @RequestParam(name = "password", required = true) String password) {
         return this.usersService
                 .getSpecificUserByEmailAndPassword(email, password)
@@ -53,7 +54,7 @@ public class ReactiveUsersController {
      */
     @GetMapping(
             produces = {MediaType.TEXT_EVENT_STREAM_VALUE})
-    public Flux<UserBoundary> getAllUsers (){
+    public Flux<EncryptedUserBoundary> getAllUsers (){
         return this.usersService
                 .getAll()
                 .log();
@@ -64,7 +65,7 @@ public class ReactiveUsersController {
     @GetMapping(
             params = {"criteria", "value"},
             produces = {MediaType.TEXT_EVENT_STREAM_VALUE})
-    public Flux<UserBoundary> getUsersByCriteria(@RequestParam(name = "criteria", required = true) String criteria,
+    public Flux<EncryptedUserBoundary> getUsers(@RequestParam(name = "criteria", required = true) String criteria,
                                                @RequestParam(name = "value", required = true) String value) {
             return this.usersService
                     .getUsersByCriteria(criteria,value)

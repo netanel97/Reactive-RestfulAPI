@@ -3,7 +3,7 @@ package reactiveusersmicroservice.data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import reactiveusersmicroservice.bounderies.Name;
+import reactiveusersmicroservice.boundaries.Name;
 
 import java.util.HashSet;
 import java.util.List;

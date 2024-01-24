@@ -1,8 +1,9 @@
 package reactiveusersmicroservice.logic;
 
 import org.springframework.stereotype.Service;
-import reactiveusersmicroservice.bounderies.DepartmentInvoker;
-import reactiveusersmicroservice.bounderies.UserBoundary;
+import reactiveusersmicroservice.boundaries.DepartmentInvoker;
+import reactiveusersmicroservice.boundaries.EncryptedUserBoundary;
+import reactiveusersmicroservice.boundaries.UserBoundary;
 import reactiveusersmicroservice.dal.ReactiveDepartmentsCrud;
 import reactiveusersmicroservice.dal.ReactiveUsersCrud;
 import reactiveusersmicroservice.utils.UsersConverter;
@@ -26,7 +27,7 @@ public class ReactiveUsersService implements UsersService {
 
 
     @Override
-    public Mono<UserBoundary> createUser(UserBoundary user) {
+    public Mono<EncryptedUserBoundary> createUser(UserBoundary user) {
         return this.reactiveUsersCrud.existsById(user.getEmail())
                 .flatMap(exists -> {
                     if (exists) {
@@ -44,14 +45,16 @@ public class ReactiveUsersService implements UsersService {
     }
 
 
-    private Flux<UserBoundary> getUsersByDomain(String domain) {
+
+
+    private Flux<EncryptedUserBoundary> getUsersByDomain(String domain) {
         return this.reactiveUsersCrud
                 .findAllByEmailLike("*" + DOMAIN + domain)
                 .map(usersConverter::toBoundary);
     }
 
 
-    private Flux<UserBoundary> getUsersByLastName(String lastName) {
+    private Flux<EncryptedUserBoundary> getUsersByLastName(String lastName) {
         return this.reactiveUsersCrud
                 .findAllByName_LastIgnoreCase(lastName)
                 .map(usersConverter::toBoundary);
@@ -59,7 +62,7 @@ public class ReactiveUsersService implements UsersService {
 
 
     @Override
-    public Mono<UserBoundary> getSpecificUserByEmailAndPassword(String email, String password) {
+    public Mono<EncryptedUserBoundary> getSpecificUserByEmailAndPassword(String email, String password) {
         return this.reactiveUsersCrud
                 .findByEmailAndPassword(email, password)
                 .map(usersConverter::toBoundary);
@@ -71,7 +74,7 @@ public class ReactiveUsersService implements UsersService {
      * @param miniMinimumAge defines the minimum age
      * @return Flux<UserBoundary>
      */
-    private Flux<UserBoundary> getUsersByMinimumAge(String miniMinimumAge) {
+    private Flux<EncryptedUserBoundary> getUsersByMinimumAge(String miniMinimumAge) {
         return this.reactiveUsersCrud.findAll()
                 .map(usersConverter::toBoundary)
                 .filter(userBoundary -> usersConverter.isOlderThen(miniMinimumAge, userBoundary.getBirthdate()));
@@ -85,7 +88,7 @@ public class ReactiveUsersService implements UsersService {
      * @return Flux<UserBoundary>
      */
     @Override
-    public Flux<UserBoundary> getUsersByCriteria(String criteria, String value) {
+    public Flux<EncryptedUserBoundary> getUsersByCriteria(String criteria, String value) {
         return switch (criteria) {
             case (CRITERIA_DOMAIN) -> this.getUsersByDomain(value);
             case (CRITERIA_LASTNAME) -> this.getUsersByLastName(value);
@@ -103,7 +106,7 @@ public class ReactiveUsersService implements UsersService {
      * @return Flux<UserBoundary>
      */
 
-    private Flux<UserBoundary> getUsersByDepartmentId(String value) {
+    private Flux<EncryptedUserBoundary> getUsersByDepartmentId(String value) {
         return this.reactiveUsersCrud.findAllUsersByDeptId(value)
                 .map(usersConverter::toBoundary);
     }
@@ -152,8 +155,8 @@ public class ReactiveUsersService implements UsersService {
      *
      * @return Flux<UserBoundary>
      */
-    @Override
-    public Flux<UserBoundary> getAll() {
+
+    public Flux<EncryptedUserBoundary> getAll() {
         return this.reactiveUsersCrud
                 .findAll()
                 .map(this.usersConverter::toBoundary);
@@ -168,5 +171,6 @@ public class ReactiveUsersService implements UsersService {
                     return this.reactiveUsersCrud.save(user); // Saving the user back to the database
                 }).then();
     }
+
 
 }

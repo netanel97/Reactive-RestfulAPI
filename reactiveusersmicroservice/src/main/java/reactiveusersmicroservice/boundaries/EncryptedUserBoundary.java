@@ -1,4 +1,4 @@
-package reactiveusersmicroservice.bounderies;
+package reactiveusersmicroservice.boundaries;
 
 import java.util.List;
 

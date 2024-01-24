@@ -1,6 +1,6 @@
 package reactiveusersmicroservice.logic;
 
-import reactiveusersmicroservice.bounderies.DepartmentBoundary;
+import reactiveusersmicroservice.boundaries.DepartmentBoundary;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 

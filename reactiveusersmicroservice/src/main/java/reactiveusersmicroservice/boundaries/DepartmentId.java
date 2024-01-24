@@ -1,4 +1,4 @@
-package reactiveusersmicroservice.bounderies;
+package reactiveusersmicroservice.boundaries;
 
 public class DepartmentId {
     private String depId;

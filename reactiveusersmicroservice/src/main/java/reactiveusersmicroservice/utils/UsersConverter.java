@@ -2,7 +2,8 @@ package reactiveusersmicroservice.utils;
 
 
 import org.springframework.stereotype.Component;
-import reactiveusersmicroservice.bounderies.UserBoundary;
+import reactiveusersmicroservice.boundaries.EncryptedUserBoundary;
+import reactiveusersmicroservice.boundaries.UserBoundary;
 import reactiveusersmicroservice.data.UserEntity;
 
 import java.time.LocalDate;
@@ -26,10 +27,9 @@ public class UsersConverter {
 
     }
 
-    public UserBoundary toBoundary(UserEntity userEntity) {
-        UserBoundary boundary = new UserBoundary();
+    public EncryptedUserBoundary toBoundary(UserEntity userEntity) {
+        EncryptedUserBoundary boundary = new EncryptedUserBoundary();
         boundary.setEmail(userEntity.getEmail());
-        boundary.setPassword("***");
         boundary.setName(userEntity.getName());
         boundary.setBirthdate(userEntity.getBirthdate());
         boundary.setRecruitdate(userEntity.getRecruitdate());

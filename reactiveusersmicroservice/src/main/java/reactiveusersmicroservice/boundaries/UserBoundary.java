@@ -1,4 +1,4 @@
-package reactiveusersmicroservice.bounderies;
+package reactiveusersmicroservice.boundaries;
 
 public class UserBoundary extends EncryptedUserBoundary{
     private String password;

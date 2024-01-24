@@ -1,6 +1,6 @@
 package reactiveusersmicroservice.utils;
 
-import reactiveusersmicroservice.bounderies.UserBoundary;
+import reactiveusersmicroservice.boundaries.UserBoundary;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -10,15 +10,15 @@ import static reactiveusersmicroservice.utils.Constants.DATE_FORMAT;
 
 public class Validators {
 
-        public static boolean isEmailValid(String email) {
+        private static boolean isEmailValid(String email) {
             return email.contains("@");
         }
 
-        public static boolean isPasswordValid(String password) {
+        private static boolean isPasswordValid(String password) {
             return password.length() >= 3;
         }
 
-        public static boolean isValidDate(String dateStr) {
+        private static boolean isValidDate(String dateStr) {
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT); // Adjust this to match your DATE_FORMAT
             try {
                 LocalDate date = LocalDate.parse(dateStr, dateTimeFormatter);
@@ -29,7 +29,7 @@ public class Validators {
         }
         public static boolean isValidUser(UserBoundary user)
         {
-            if (isPasswordValid(user.getPassword()))
+            if (!isPasswordValid(user.getPassword()))
                 System.err.println("password invalid");
             else if(isEmailValid(user.getEmail()))
                 System.err.println("email invalid");
