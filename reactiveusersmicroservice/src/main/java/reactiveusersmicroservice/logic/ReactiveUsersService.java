@@ -95,7 +95,7 @@ public class ReactiveUsersService implements UsersService {
             case (CRITERIA_MINIMUM_AGE) -> this.getUsersByMinimumAge(value);
             case (CRITERIA_DEPARTMENT) -> this.getUsersByDepartmentId(value);
             default ->
-                    Flux.error(new RuntimeException("Invalid criteria"));//TODO: need to check if need to throw exception or 200ok
+                    Flux.empty();
         };
     }
 
@@ -115,7 +115,6 @@ public class ReactiveUsersService implements UsersService {
     public Mono<Void> bindUserDepartment(String email, DepartmentInvoker department) {
         return this.reactiveUsersCrud.existsById(email)
                 .flatMap(exists -> {
-                    System.err.println(exists);
                     if (!exists) {
                         return Mono.empty(); // User does not exist
                     }

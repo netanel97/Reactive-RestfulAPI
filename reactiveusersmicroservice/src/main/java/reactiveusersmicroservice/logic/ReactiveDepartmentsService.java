@@ -26,7 +26,7 @@ public class ReactiveDepartmentsService implements DepartmentsService {
         return reactiveDepartmentsCrud.existsById(department.getDeptId())
             .flatMap(exists -> {
                 if (exists) {
-                    return Mono.just(new DepartmentBoundary()); //TODO: need to check if need to throw exception or 200ok
+                    return Mono.empty();
                 } else {
                     department.setCreationDate(departmentsConverter.getNowDateString());
                     return Mono.just(department)

@@ -31,12 +31,12 @@ public class Validators {
         {
             if (!isPasswordValid(user.getPassword()))
                 System.err.println("password invalid");
-            else if(isEmailValid(user.getEmail()))
+            else if(!isEmailValid(user.getEmail()))
                 System.err.println("email invalid");
-            else if(isValidDate(user.getBirthdate()))
+            else if(!isValidDate(user.getBirthdate()))
                 System.err.println("birthday invalid");
-            else if(isValidDate(user.getRecruitdate()))
-                System.err.println("birthday invalid");
+            else if(!isValidDate(user.getRecruitdate()))
+                System.err.println("reqruitdate invalid");
             return isPasswordValid(user.getPassword())&&
                         isEmailValid(user.getEmail())&&
                         isValidDate(user.getBirthdate())&&
