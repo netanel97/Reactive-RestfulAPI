@@ -6,9 +6,11 @@ import reactiveusersmicroservice.bounderies.UserBoundary;
 import reactiveusersmicroservice.dal.ReactiveDepartmentsCrud;
 import reactiveusersmicroservice.dal.ReactiveUsersCrud;
 import reactiveusersmicroservice.utils.UsersConverter;
+import reactiveusersmicroservice.utils.Validators;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import static reactiveusersmicroservice.utils.Constants.*;
+
 
 @Service
 public class ReactiveUsersService implements UsersService {
@@ -28,12 +30,15 @@ public class ReactiveUsersService implements UsersService {
         return this.reactiveUsersCrud.existsById(user.getEmail())
                 .flatMap(exists -> {
                     if (exists) {
-                        return Mono.just(new UserBoundary()); //TODO: need to check if need to throw exception or 200ok
+                        return Mono.empty(); //TODO: need to check if need to throw exception or 200ok
                     } else {
+                        if(Validators.isValidUser(user))
                         return Mono.just(user)
                                 .map(this.usersConverter::toEntity)
                                 .flatMap(this.reactiveUsersCrud::save)
                                 .map(this.usersConverter::toBoundary);
+                        else
+                            return Mono.empty();
                     }
                 });
     }
