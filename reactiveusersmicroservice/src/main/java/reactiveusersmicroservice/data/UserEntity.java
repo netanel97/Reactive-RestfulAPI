@@ -5,6 +5,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import reactiveusersmicroservice.boundaries.Name;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,7 +19,7 @@ public class UserEntity {
     private String password;
     private String birthdate;
     private String recruitdate;
-    private List<String> roles;
+    private List<String> roles = new ArrayList<>();
 
     private Set<String> departments = new HashSet<>();
 

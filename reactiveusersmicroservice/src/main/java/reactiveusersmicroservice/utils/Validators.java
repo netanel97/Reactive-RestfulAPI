@@ -1,7 +1,7 @@
 package reactiveusersmicroservice.utils;
 
 import reactiveusersmicroservice.boundaries.Name;
-import reactiveusersmicroservice.boundaries.UserBoundary;
+import reactiveusersmicroservice.boundaries.NewUserBoundary;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -28,7 +28,7 @@ public class Validators {
                 return false; // If parsing fails, the format is invalid
             }
         }
-        public static boolean isValidUser(UserBoundary user)
+        public static boolean isValidUser(NewUserBoundary user)
         {
             if (!isPasswordValid(user.getPassword()))
                 System.err.println("password invalid");
@@ -51,6 +51,6 @@ public class Validators {
 
     private static boolean isNameValid(Name name)
     {
-        return !name.getFirst().isEmpty() && !name.getLast().isEmpty();
+        return !name.getFirst().isBlank() && !name.getLast().isBlank();
     }
 }

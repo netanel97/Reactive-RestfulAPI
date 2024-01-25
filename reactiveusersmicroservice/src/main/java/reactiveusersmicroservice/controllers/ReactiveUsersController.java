@@ -2,8 +2,8 @@ package reactiveusersmicroservice.controllers;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import reactiveusersmicroservice.boundaries.DepartmentInvoker;
-import reactiveusersmicroservice.boundaries.EncryptedUserBoundary;
 import reactiveusersmicroservice.boundaries.UserBoundary;
+import reactiveusersmicroservice.boundaries.NewUserBoundary;
 import reactiveusersmicroservice.logic.UsersService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -21,57 +21,37 @@ public class ReactiveUsersController {
     @PostMapping(
             produces = {MediaType.APPLICATION_JSON_VALUE},
             consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public Mono<EncryptedUserBoundary> createUser(@RequestBody UserBoundary userBoundary) {
+    public Mono<UserBoundary> createUser(@RequestBody NewUserBoundary newUserBoundary) {
         return this.usersService
-                .createUser(userBoundary)
+                .createUser(newUserBoundary)
                 .log();
     }
 
     @GetMapping(
             path = {"/{email}"},
             produces = {MediaType.APPLICATION_JSON_VALUE})
-    public Mono<EncryptedUserBoundary> getUser(@PathVariable("email") String email,
+    public Mono<UserBoundary> getUser(@PathVariable("email") String email,
                                       @RequestParam(name = "password", required = true) String password) {
         return this.usersService
                 .getSpecificUserByEmailAndPassword(email, password)
                 .log();
     }
 
-    /**
-     * Delete all users from the database
-     * @return void
-     */
+    @GetMapping(
+            produces = {MediaType.TEXT_EVENT_STREAM_VALUE})
+    public Flux<UserBoundary> getUsers(@RequestParam(name = "criteria", required = false) String criteria,
+                                       @RequestParam(name = "value", required = false) String value) {
+            return this.usersService
+                    .getUsers(criteria,value)
+                    .log();
+        }
+
     @DeleteMapping
     public Mono<Void> deleteAll(){
         return this.usersService
                 .deleteAll()
                 .log();
     }
-
-    /**
-     * Get all users from the database
-     * @return Flux<UserBoundary>
-     */
-    @GetMapping(
-            produces = {MediaType.TEXT_EVENT_STREAM_VALUE})
-    public Flux<EncryptedUserBoundary> getAllUsers (){
-        return this.usersService
-                .getAll()
-                .log();
-    }
-
-
-    //TODO: to check if we need to check the criteria by if(criteria.equals("byDomain"))
-    @GetMapping(
-            params = {"criteria", "value"},
-            produces = {MediaType.TEXT_EVENT_STREAM_VALUE})
-    public Flux<EncryptedUserBoundary> getUsers(@RequestParam(name = "criteria", required = true) String criteria,
-                                               @RequestParam(name = "value", required = true) String value) {
-            return this.usersService
-                    .getUsersByCriteria(criteria,value)
-                    .log();
-        }
-
 
     @PutMapping(
             path = {"/{email}/department"},

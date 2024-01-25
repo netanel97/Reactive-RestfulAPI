@@ -2,8 +2,8 @@ package reactiveusersmicroservice.logic;
 
 import org.springframework.stereotype.Service;
 import reactiveusersmicroservice.boundaries.DepartmentInvoker;
-import reactiveusersmicroservice.boundaries.EncryptedUserBoundary;
 import reactiveusersmicroservice.boundaries.UserBoundary;
+import reactiveusersmicroservice.boundaries.NewUserBoundary;
 import reactiveusersmicroservice.dal.ReactiveDepartmentsCrud;
 import reactiveusersmicroservice.dal.ReactiveUsersCrud;
 import reactiveusersmicroservice.utils.UsersConverter;
@@ -25,13 +25,18 @@ public class ReactiveUsersService implements UsersService {
         this.reactiveDepartmentsCrud = reactiveDepartmentsCrud;
     }
 
-
+    /**
+     * Create a new user in the database
+     *
+     * @param user defines the user to create
+     * @return Mono<NewUserBoundary>
+     */
     @Override
-    public Mono<EncryptedUserBoundary> createUser(UserBoundary user) {
+    public Mono<UserBoundary> createUser(NewUserBoundary user) {
         return this.reactiveUsersCrud.existsById(user.getEmail())
                 .flatMap(exists -> {
                     if (exists) {
-                        return Mono.empty(); //TODO: need to check if need to throw exception or 200ok
+                        return Mono.empty();
                     } else {
                         if(Validators.isValidUser(user))
                         return Mono.just(user)
@@ -44,73 +49,54 @@ public class ReactiveUsersService implements UsersService {
                 });
     }
 
-
-
-
-    private Flux<EncryptedUserBoundary> getUsersByDomain(String domain) {
-        return this.reactiveUsersCrud
-                .findAllByEmailLike("*" + DOMAIN + domain)
-                .map(usersConverter::toBoundary);
-    }
-
-
-    private Flux<EncryptedUserBoundary> getUsersByLastName(String lastName) {
-        return this.reactiveUsersCrud
-                .findAllByName_LastIgnoreCase(lastName)
-                .map(usersConverter::toBoundary);
-    }
-
-
+    /**
+     * Get a specific user from the database by email
+     *
+     * @param email defines the email to search by
+     * @param password defines the password to check match
+     * @return Mono<NewUserBoundary>
+     */
     @Override
-    public Mono<EncryptedUserBoundary> getSpecificUserByEmailAndPassword(String email, String password) {
+    public Mono<UserBoundary> getSpecificUserByEmailAndPassword(String email, String password) {
         return this.reactiveUsersCrud
                 .findByEmailAndPassword(email, password)
                 .map(usersConverter::toBoundary);
     }
 
     /**
-     * Get all users that are older than the minimum age
-     *
-     * @param miniMinimumAge defines the minimum age
-     * @return Flux<UserBoundary>
-     */
-    private Flux<EncryptedUserBoundary> getUsersByMinimumAge(String miniMinimumAge) {
-        return this.reactiveUsersCrud.findAll()
-                .map(usersConverter::toBoundary)
-                .filter(userBoundary -> usersConverter.isOlderThen(miniMinimumAge, userBoundary.getBirthdate()));
-    }
-
-    /**
-     * Get users by criteria
+     * Get users from the database
      *
      * @param criteria defines the criteria to search by
-     * @param value    defines the domain to search by
-     * @return Flux<UserBoundary>
+     *                 (domain, last name, minimum age, department)
+     *                 if null, return all users
+     *                 if not null, return users by criteria
+     * @param value defines the value to search by
+     *              if criteria is null, value is ignored
+     * return Flux<NewUserBoundary>
      */
     @Override
-    public Flux<EncryptedUserBoundary> getUsersByCriteria(String criteria, String value) {
-        return switch (criteria) {
-            case (CRITERIA_DOMAIN) -> this.getUsersByDomain(value);
-            case (CRITERIA_LASTNAME) -> this.getUsersByLastName(value);
-            case (CRITERIA_MINIMUM_AGE) -> this.getUsersByMinimumAge(value);
-            case (CRITERIA_DEPARTMENT) -> this.getUsersByDepartmentId(value);
-            default ->
-                    Flux.empty();
-        };
+    public Flux<UserBoundary> getUsers(String criteria, String value) {
+        return criteria == null ? this.getAll() : getUsersByCriteria(criteria, value);
     }
 
     /**
-     * Get users by department id
+     * Delete all users from the database
      *
-     * @param value defines the department id to search by
-     * @return Flux<UserBoundary>
+     * @return Mono<Void>
      */
-
-    private Flux<EncryptedUserBoundary> getUsersByDepartmentId(String value) {
-        return this.reactiveUsersCrud.findAllUsersByDeptId(value)
-                .map(usersConverter::toBoundary);
+    @Override
+    public Mono<Void> deleteAll() {
+        return this.reactiveUsersCrud
+                .deleteAll();
     }
 
+    /**
+     * bind a user to a department
+     *
+     * @param email defines the email of the user to bind
+     * @param department defines the department to bind to
+     * @return Mono<Void>
+     */
     @Override
     public Mono<Void> bindUserDepartment(String email, DepartmentInvoker department) {
         return this.reactiveUsersCrud.existsById(email)
@@ -130,37 +116,17 @@ public class ReactiveUsersService implements UsersService {
                                                 user.getDepartments().add(depId); // Add department if not already present
                                                 return this.reactiveUsersCrud.save(user).then(); // Save and convert to Mono<Void>
                                             }
-
                                             return Mono.empty(); // Department already present, no action needed
                                         });
                             });
                 });
     }
 
-
     /**
-     * Delete all users from the database
+     * Remove all departments from all users
      *
      * @return Mono<Void>
      */
-    @Override
-    public Mono<Void> deleteAll() {
-        return this.reactiveUsersCrud
-                .deleteAll();
-    }
-
-    /**
-     * Get all users from the database
-     *
-     * @return Flux<UserBoundary>
-     */
-
-    public Flux<EncryptedUserBoundary> getAll() {
-        return this.reactiveUsersCrud
-                .findAll()
-                .map(this.usersConverter::toBoundary);
-    }
-
     @Override
     public Mono<Void> removeAllDepartmentsFromUsers() {
         return this.reactiveUsersCrud
@@ -169,6 +135,82 @@ public class ReactiveUsersService implements UsersService {
                     user.getDepartments().clear(); // Clearing the departments set
                     return this.reactiveUsersCrud.save(user); // Saving the user back to the database
                 }).then();
+    }
+
+    /**
+     * Get all users from the database
+     *
+     * @return Flux<NewUserBoundary>
+     */
+    public Flux<UserBoundary> getAll() {
+        return this.reactiveUsersCrud
+                .findAll()
+                .map(this.usersConverter::toBoundary);
+    }
+
+    /**
+     * Get users by criteria
+     *
+     * @param criteria defines the criteria to search by
+     * @param value    defines the domain to search by
+     * @return Flux<NewUserBoundary>
+     */
+    public Flux<UserBoundary> getUsersByCriteria(String criteria, String value) {
+        return switch (criteria) {
+            case (CRITERIA_DOMAIN) -> this.getUsersByDomain(value);
+            case (CRITERIA_LASTNAME) -> this.getUsersByLastName(value);
+            case (CRITERIA_MINIMUM_AGE) -> this.getUsersByMinimumAge(value);
+            case (CRITERIA_DEPARTMENT) -> this.getUsersByDepartmentId(value);
+            default ->
+                    Flux.empty();
+        };
+    }
+
+    /**
+     * Get users by domain
+     *
+     * @param domain defines the domain to search by
+     * @return Flux<NewUserBoundary>
+     */
+    private Flux<UserBoundary> getUsersByDomain(String domain) {
+        return this.reactiveUsersCrud
+                .findAllByEmailLike("*" + DOMAIN + domain)
+                .map(usersConverter::toBoundary);
+    }
+
+    /**
+     * Get users by last name
+     *
+     * @param lastName defines the last name to search by
+     * @return Flux<NewUserBoundary>
+     */
+    private Flux<UserBoundary> getUsersByLastName(String lastName) {
+        return this.reactiveUsersCrud
+                .findAllByName_LastIgnoreCase(lastName)
+                .map(usersConverter::toBoundary);
+    }
+
+    /**
+     * Get all users that are older than the minimum age
+     *
+     * @param miniMinimumAge defines the minimum age
+     * @return Flux<NewUserBoundary>
+     */
+    private Flux<UserBoundary> getUsersByMinimumAge(String miniMinimumAge) {
+        return this.reactiveUsersCrud.findAll()
+                .map(usersConverter::toBoundary)
+                .filter(userBoundary -> usersConverter.isOlderThen(miniMinimumAge, userBoundary.getBirthdate()));
+    }
+
+    /**
+     * Get users by department id
+     *
+     * @param value defines the department id to search by
+     * @return Flux<NewUserBoundary>
+     */
+    private Flux<UserBoundary> getUsersByDepartmentId(String value) {
+        return this.reactiveUsersCrud.findAllUsersByDeptId(value)
+                .map(usersConverter::toBoundary);
     }
 
 

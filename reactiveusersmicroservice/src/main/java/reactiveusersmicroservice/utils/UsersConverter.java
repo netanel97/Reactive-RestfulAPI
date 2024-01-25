@@ -2,8 +2,8 @@ package reactiveusersmicroservice.utils;
 
 
 import org.springframework.stereotype.Component;
-import reactiveusersmicroservice.boundaries.EncryptedUserBoundary;
 import reactiveusersmicroservice.boundaries.UserBoundary;
+import reactiveusersmicroservice.boundaries.NewUserBoundary;
 import reactiveusersmicroservice.data.UserEntity;
 
 import java.time.LocalDate;
@@ -15,20 +15,20 @@ import static reactiveusersmicroservice.utils.Constants.DATE_FORMAT;
 @Component
 public class UsersConverter {
 
-    public UserEntity toEntity(UserBoundary userBoundary) {
+    public UserEntity toEntity(NewUserBoundary newUserBoundary) {
         UserEntity entity = new UserEntity();
-        entity.setEmail(userBoundary.getEmail());
-        entity.setName(userBoundary.getName());
-        entity.setPassword(userBoundary.getPassword());
-        entity.setBirthdate(userBoundary.getBirthdate());
-        entity.setRecruitdate(userBoundary.getRecruitdate());
-        entity.setRoles(userBoundary.getRoles());
+        entity.setEmail(newUserBoundary.getEmail());
+        entity.setName(newUserBoundary.getName());
+        entity.setPassword(newUserBoundary.getPassword());
+        entity.setBirthdate(newUserBoundary.getBirthdate());
+        entity.setRecruitdate(newUserBoundary.getRecruitdate());
+        entity.setRoles(newUserBoundary.getRoles());
         return entity;
 
     }
 
-    public EncryptedUserBoundary toBoundary(UserEntity userEntity) {
-        EncryptedUserBoundary boundary = new EncryptedUserBoundary();
+    public UserBoundary toBoundary(UserEntity userEntity) {
+        UserBoundary boundary = new UserBoundary();
         boundary.setEmail(userEntity.getEmail());
         boundary.setName(userEntity.getName());
         boundary.setBirthdate(userEntity.getBirthdate());
