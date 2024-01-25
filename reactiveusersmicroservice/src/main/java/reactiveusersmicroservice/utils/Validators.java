@@ -1,5 +1,6 @@
 package reactiveusersmicroservice.utils;
 
+import reactiveusersmicroservice.boundaries.Name;
 import reactiveusersmicroservice.boundaries.UserBoundary;
 
 import java.time.LocalDate;
@@ -33,6 +34,8 @@ public class Validators {
                 System.err.println("password invalid");
             else if(!isEmailValid(user.getEmail()))
                 System.err.println("email invalid");
+            else if(!isNameValid(user.getName()))
+                System.err.println("name invalid");
             else if(!isValidDate(user.getBirthdate()))
                 System.err.println("birthday invalid");
             else if(!isValidDate(user.getRecruitdate()))
@@ -40,8 +43,14 @@ public class Validators {
             return isPasswordValid(user.getPassword())&&
                         isEmailValid(user.getEmail())&&
                         isValidDate(user.getBirthdate())&&
-                        isValidDate(user.getRecruitdate());
+                        isValidDate(user.getRecruitdate())&&
+                        isNameValid(user.getName());
 
 
         }
+
+    private static boolean isNameValid(Name name)
+    {
+        return !name.getFirst().isEmpty() && !name.getLast().isEmpty();
+    }
 }
