@@ -13,10 +13,9 @@ import java.time.LocalDate;
 
 @Service
 public class ReactiveDepartmentsService implements DepartmentsService {
-    private DepartmentsConverter departmentsConverter;
-    private ReactiveDepartmentsCrud reactiveDepartmentsCrud;
-
-    private UsersService reactiveUsersService;
+    private final DepartmentsConverter departmentsConverter;
+    private final ReactiveDepartmentsCrud reactiveDepartmentsCrud;
+    private final UsersService reactiveUsersService;
 
     public ReactiveDepartmentsService(ReactiveDepartmentsCrud reactiveDepartmentsCrud, DepartmentsConverter departmentsConverter, UsersService reactiveUsersService) {
         this.reactiveDepartmentsCrud = reactiveDepartmentsCrud;

@@ -17,9 +17,9 @@ import static reactiveusersmicroservice.utils.Constants.*;
 
 @Service
 public class ReactiveUsersService implements UsersService {
-    private UsersConverter usersConverter;
-    private ReactiveUsersCrud reactiveUsersCrud;
-    private ReactiveDepartmentsCrud reactiveDepartmentsCrud;
+    private final UsersConverter usersConverter;
+    private final ReactiveUsersCrud reactiveUsersCrud;
+    private final ReactiveDepartmentsCrud reactiveDepartmentsCrud;
 
     public ReactiveUsersService(ReactiveUsersCrud reactiveUsersCrud, UsersConverter usersConverter, ReactiveDepartmentsCrud reactiveDepartmentsCrud) {
         this.reactiveUsersCrud = reactiveUsersCrud;
