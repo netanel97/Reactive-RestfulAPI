@@ -4,9 +4,12 @@ package reactiveusersmicroservice.logic;
 import org.springframework.stereotype.Service;
 import reactiveusersmicroservice.boundaries.DepartmentBoundary;
 import reactiveusersmicroservice.dal.ReactiveDepartmentsCrud;
-import reactiveusersmicroservice.utils.DepartmentsConverter;
+import reactiveusersmicroservice.converters.DepartmentsConverter;
+import reactiveusersmicroservice.utils.DateUtils;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.time.LocalDate;
 
 @Service
 public class ReactiveDepartmentsService implements DepartmentsService {
@@ -28,7 +31,7 @@ public class ReactiveDepartmentsService implements DepartmentsService {
                 if (exists) {
                     return Mono.empty();
                 } else {
-                    department.setCreationDate(departmentsConverter.getNowDateString());
+                    department.setCreationDate(DateUtils.toString(LocalDate.now()));
                     return Mono.just(department)
                             .map(this.departmentsConverter::toEntity)
                             .flatMap(this.reactiveDepartmentsCrud::save)

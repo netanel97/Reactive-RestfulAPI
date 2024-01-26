@@ -1,12 +1,8 @@
-package reactiveusersmicroservice.utils;
+package reactiveusersmicroservice.converters;
 
 import org.springframework.stereotype.Component;
 import reactiveusersmicroservice.boundaries.DepartmentBoundary;
 import reactiveusersmicroservice.data.DepartmentEntity;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-
-import static reactiveusersmicroservice.utils.Constants.DATE_FORMAT;
 
 @Component
 public class DepartmentsConverter {
@@ -28,9 +24,4 @@ public class DepartmentsConverter {
         return departmentBoundary;
     }
 
-    public String getNowDateString() {
-        LocalDate localDate = LocalDate.now();
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
-        return localDate.format(dateTimeFormatter);
-    }
 }

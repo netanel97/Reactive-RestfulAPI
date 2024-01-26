@@ -6,10 +6,12 @@ import reactiveusersmicroservice.boundaries.UserBoundary;
 import reactiveusersmicroservice.boundaries.NewUserBoundary;
 import reactiveusersmicroservice.dal.ReactiveDepartmentsCrud;
 import reactiveusersmicroservice.dal.ReactiveUsersCrud;
-import reactiveusersmicroservice.utils.UsersConverter;
+import reactiveusersmicroservice.converters.UsersConverter;
+import reactiveusersmicroservice.utils.DateUtils;
 import reactiveusersmicroservice.utils.Validators;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
 import static reactiveusersmicroservice.utils.Constants.*;
 
 
@@ -38,11 +40,11 @@ public class ReactiveUsersService implements UsersService {
                     if (exists) {
                         return Mono.empty();
                     } else {
-                        if(Validators.isValidUser(user))
-                        return Mono.just(user)
-                                .map(this.usersConverter::toEntity)
-                                .flatMap(this.reactiveUsersCrud::save)
-                                .map(this.usersConverter::toBoundary);
+                        if (Validators.isValidUser(user))
+                            return Mono.just(user)
+                                    .map(this.usersConverter::toEntity)
+                                    .flatMap(this.reactiveUsersCrud::save)
+                                    .map(this.usersConverter::toBoundary);
                         else
                             return Mono.empty();
                     }
@@ -52,7 +54,7 @@ public class ReactiveUsersService implements UsersService {
     /**
      * Get a specific user from the database by email
      *
-     * @param email defines the email to search by
+     * @param email    defines the email to search by
      * @param password defines the password to check match
      * @return Mono<NewUserBoundary>
      */
@@ -70,13 +72,25 @@ public class ReactiveUsersService implements UsersService {
      *                 (domain, last name, minimum age, department)
      *                 if null, return all users
      *                 if not null, return users by criteria
-     * @param value defines the value to search by
-     *              if criteria is null, value is ignored
-     * return Flux<NewUserBoundary>
+     * @param value    defines the value to search by
+     *                 if criteria is null, value is ignored
+     *                 return Flux<NewUserBoundary>
      */
     @Override
     public Flux<UserBoundary> getUsers(String criteria, String value) {
-        return criteria == null ? this.getAll() : getUsersByCriteria(criteria, value);
+        if(criteria == null) {
+            if (value != null)
+                return Flux.empty();
+            else
+                return this.getAll();
+        }
+        else
+            return getUsersByCriteria(criteria, value);
+
+        /* TODO: This 1 line code below is working well but when I'm sending a value without a criteria, it returns all users instead of empty flux
+                 The above code behave better but it's not a proper one liner. I think it still ok.
+        */
+//        return criteria == null ? this.getAll() : getUsersByCriteria(criteria, value);
     }
 
     /**
@@ -93,7 +107,7 @@ public class ReactiveUsersService implements UsersService {
     /**
      * bind a user to a department
      *
-     * @param email defines the email of the user to bind
+     * @param email      defines the email of the user to bind
      * @param department defines the department to bind to
      * @return Mono<Void>
      */
@@ -161,8 +175,7 @@ public class ReactiveUsersService implements UsersService {
             case (CRITERIA_LASTNAME) -> this.getUsersByLastName(value);
             case (CRITERIA_MINIMUM_AGE) -> this.getUsersByMinimumAge(value);
             case (CRITERIA_DEPARTMENT) -> this.getUsersByDepartmentId(value);
-            default ->
-                    Flux.empty();
+            default -> Flux.empty();
         };
     }
 
@@ -174,7 +187,7 @@ public class ReactiveUsersService implements UsersService {
      */
     private Flux<UserBoundary> getUsersByDomain(String domain) {
         return this.reactiveUsersCrud
-                .findAllByEmailLike("*" + DOMAIN + domain)
+                .findAllByEmailLike("*" + DOMAIN_DELIMITER + domain)
                 .map(usersConverter::toBoundary);
     }
 
@@ -199,7 +212,7 @@ public class ReactiveUsersService implements UsersService {
     private Flux<UserBoundary> getUsersByMinimumAge(String miniMinimumAge) {
         return this.reactiveUsersCrud.findAll()
                 .map(usersConverter::toBoundary)
-                .filter(userBoundary -> usersConverter.isOlderThen(miniMinimumAge, userBoundary.getBirthdate()));
+                .filter(userBoundary -> DateUtils.isAgeGreaterThanByBirthdate(userBoundary.getBirthdate(), miniMinimumAge));
     }
 
     /**

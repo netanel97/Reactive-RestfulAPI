@@ -14,7 +14,6 @@ public class Name {
 
     }
 
-    //TODO: check if the string is not empty. =]
     public String getFirst() {
         return first;
     }
