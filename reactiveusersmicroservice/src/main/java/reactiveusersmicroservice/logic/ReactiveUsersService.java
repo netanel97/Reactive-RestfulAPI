@@ -1,5 +1,6 @@
 package reactiveusersmicroservice.logic;
 
+import org.springframework.data.mongodb.core.mapping.Encrypted;
 import org.springframework.stereotype.Service;
 import reactiveusersmicroservice.boundaries.DepartmentInvoker;
 import reactiveusersmicroservice.boundaries.UserBoundary;
@@ -187,7 +188,7 @@ public class ReactiveUsersService implements UsersService {
      */
     private Flux<UserBoundary> getUsersByDomain(String domain) {
         return this.reactiveUsersCrud
-                .findAllByEmailLike("*" + DOMAIN_DELIMITER + domain)
+                .findByEmailEndingWith("@".concat(domain))
                 .map(usersConverter::toBoundary);
     }
 
