@@ -1,6 +1,5 @@
 package reactiveusersmicroservice.logic;
 
-import org.springframework.data.mongodb.core.mapping.Encrypted;
 import org.springframework.stereotype.Service;
 import reactiveusersmicroservice.boundaries.DepartmentInvoker;
 import reactiveusersmicroservice.boundaries.UserBoundary;
@@ -79,19 +78,15 @@ public class ReactiveUsersService implements UsersService {
      */
     @Override
     public Flux<UserBoundary> getUsers(String criteria, String value) {
-        if(criteria == null) {
+        if (criteria == null) {
             if (value != null)
                 return Flux.empty();
             else
                 return this.getAll();
-        }
+        } else if (value == null)
+            return Flux.empty();
         else
             return getUsersByCriteria(criteria, value);
-
-        /* TODO: This 1 line code below is working well but when I'm sending a value without a criteria, it returns all users instead of empty flux
-                 The above code behave better but it's not a proper one liner. I think it still ok.
-        */
-//        return criteria == null ? this.getAll() : getUsersByCriteria(criteria, value);
     }
 
     /**
@@ -188,7 +183,7 @@ public class ReactiveUsersService implements UsersService {
      */
     private Flux<UserBoundary> getUsersByDomain(String domain) {
         return this.reactiveUsersCrud
-                .findByEmailEndingWith("@".concat(domain))
+                .findAllByEmailEndingWith("@".concat(domain))
                 .map(usersConverter::toBoundary);
     }
 

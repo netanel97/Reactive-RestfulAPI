@@ -3,7 +3,6 @@ package reactiveusersmicroservice.utils;
 
 import org.springframework.stereotype.Component;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
@@ -13,43 +12,6 @@ import static reactiveusersmicroservice.utils.Constants.FORMAT_DATE;
 
 @Component
 public class DateUtils {
-
-    /**
-     * Checks if a string is in a valid date format
-     *
-     * @param dateStr - the string to check
-     * @return true if the string is in the correct format, false otherwise
-     */
-    public static boolean isValidDateFormat(String dateStr) {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(FORMAT_DATE);
-        try {
-            LocalDate date = LocalDate.parse(dateStr, dateTimeFormatter);
-        } catch (DateTimeParseException e) {
-            // If parsing fails - the format is invalid
-            return false;
-        }
-        // Parsing succeeded - the format is valid
-        return true;
-    }
-
-    /**
-     * Checks if a string is in a valid date format
-     *
-     * @param dateStr - the string to check
-     * @param format  - the format of the string
-     * @return true if the string is in the correct format, false otherwise
-     */
-    public static boolean isValidDateFormat(String dateStr, String format) {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(format);
-        try {
-            LocalDate date = LocalDate.parse(dateStr, dateTimeFormatter);
-        } catch (DateTimeParseException e) {
-            // If parsing fails - the format is invalid
-            return false;
-        }
-        // Parsing succeeded - the format is valid
-        return true;
-    }
 
     /**
      * Converts a LocalDate object to a string
@@ -69,27 +31,6 @@ public class DateUtils {
             return null;
         }
     }
-
-    /**
-     * Converts a LocalDate object to a string
-     *
-     * @param date   - the date to convert
-     * @param format - the format of the string
-     * @return the string representation of the date
-     */
-    public static String toString(LocalDate date, String format) {
-        try {
-            if (date != null && format != null) {
-                SimpleDateFormat sdf = new SimpleDateFormat(format);
-                return sdf.format(date);
-            } else {
-                return null;
-            }
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
     /**
      * Converts a string to a LocalDate object
      *
@@ -104,23 +45,6 @@ public class DateUtils {
             return null;
         }
     }
-
-    /**
-     * Converts a string to a LocalDate object
-     *
-     * @param dateString - the string to convert
-     * @param format     - the format of the string
-     * @return LocalDate object if the string is in the correct format, null otherwise
-     */
-    public static LocalDate toLocalDate(String dateString, String format) {
-        try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
-            return LocalDate.parse(dateString, formatter);
-        } catch (DateTimeParseException e) {
-            return null;
-        }
-    }
-
     /**
      * Calculates the age from a birthdate
      *
@@ -157,6 +81,5 @@ public class DateUtils {
     public static boolean isAgeGreaterThanByBirthdate(int minimumAge, String birthdate) {
         return getAgeFromBirthDate(toLocalDate(birthdate)) >= minimumAge;
     }
-
 
 }
