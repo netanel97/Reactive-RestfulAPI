@@ -15,7 +15,3 @@
 - User Functionalities (MUST)
 - Department Functionalities (BONUS)
 
-
-## Have A Nice Day :) 
-<img src=https://www.pngall.com/wp-content/uploads/13/Stitch-PNG-Image-HD.png alt="have a nice day img" width="200" height="200" />
-
