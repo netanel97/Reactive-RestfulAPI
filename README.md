@@ -1,4 +1,4 @@
-## This is a reactive programing project - ex1
+## This is a reactive programing project
 
 **Our Team:**
  Noy Tsafrir, Shachar Felman, Netanel Habas, Omer Iny
