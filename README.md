@@ -11,7 +11,4 @@
 - Java 21 (jdk 21)
 - docker desktop up and running
 
-**Implementation:**
-- User Functionalities (MUST)
-- Department Functionalities (BONUS)
 
